@@ -20,6 +20,8 @@ package com.joanzapata;
 
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Button;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.googlecode.androidannotations.annotations.*;
@@ -49,6 +51,11 @@ public class PDFViewActivity extends SherlockActivity implements OnPageChangeLis
     @AfterViews
     void afterViews() {
         display(pdfName, false);
+    }
+
+    @Click(R.id.btnnext)
+    void next(){
+        pdfView.jumpToInstant(pdfView.getCurrentPage() + 2);
     }
 
     @OptionsItem

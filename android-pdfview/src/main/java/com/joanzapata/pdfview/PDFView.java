@@ -241,10 +241,18 @@ public class PDFView extends SurfaceView {
      * @param page Page number starting from 1.
      */
     public void jumpTo(int page) {
-        showPage(page - 1);
+        showPage(page - 1, false);
     }
 
-    void showPage(int pageNb) {
+    public void jumpToInstant(int page) {
+        showPage(page - 1, true);
+    }
+
+    public void showPage(int pageNb) {
+        showPage(pageNb, false);
+    }
+
+    public void showPage(int pageNb, boolean instant) {
         state = State.SHOWN;
 
         // Check the page number and makes the
@@ -262,9 +270,15 @@ public class PDFView extends SurfaceView {
         // Reset the zoom and center the page on the screen
         resetZoom();
         if (swipeVertical)
-        	animationManager.startYAnimation(currentYOffset, calculateCenterOffsetForPage(pageNb));
+            if(instant)
+                animationManager.startYAnimation(currentYOffset, calculateCenterOffsetForPage(pageNb),0);
+            else
+                animationManager.startYAnimation(currentYOffset, calculateCenterOffsetForPage(pageNb));
         else
-        	animationManager.startXAnimation(currentXOffset, calculateCenterOffsetForPage(pageNb));
+            if(instant)
+                animationManager.startXAnimation(currentXOffset, calculateCenterOffsetForPage(pageNb),0);
+            else
+                animationManager.startXAnimation(currentXOffset, calculateCenterOffsetForPage(pageNb));
         loadPages();
 
         if (onPageChangeListener != null) {
@@ -545,8 +559,8 @@ public class PDFView extends SurfaceView {
         // the PDF page. These four coordinates are ratios (0 -> 1), where
         // (0,0) is the top left corner of the PDF page, and (1,1) is the
         // bottom right corner.
-        float ratioX = 1f / (float) optimalPageWidth;
-        float ratioY = 1f / (float) optimalPageHeight;
+        float ratioX = 1f / optimalPageWidth;
+        float ratioY = 1f / optimalPageHeight;
         final float partHeight = (Constants.PART_SIZE * ratioY) / zoom;
         final float partWidth = (Constants.PART_SIZE * ratioX) / zoom;
         final int nbRows = (int) Math.ceil(1f / partHeight);
@@ -623,11 +637,7 @@ public class PDFView extends SurfaceView {
                 }
 
                 nbItemTreated++;
-                if (nbItemTreated >= nbOfPartsLoadable) {
-                    // Return false to stop the loop
-                    return false;
-                }
-                return true;
+                return nbItemTreated < nbOfPartsLoadable;
             }
         }
 

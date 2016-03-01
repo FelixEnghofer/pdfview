@@ -46,26 +46,46 @@ class AnimationManager {
         this.pdfView = pdfView;
     }
 
+    public void startXAnimation(float xFrom, float xTo, int duration) {
+        prepXAnimation(xFrom, xTo);
+        animation.setDuration(duration);
+        animation.start();
+    }
+
     public void startXAnimation(float xFrom, float xTo) {
+        prepXAnimation(xFrom, xTo);
+        animation.setDuration(400);
+        animation.start();
+    }
+
+    private void prepXAnimation(float xFrom, float xTo) {
         if (animation != null) {
             animation.cancel();
         }
         animation = ValueAnimator.ofFloat(xFrom, xTo);
         animation.setInterpolator(new DecelerateInterpolator());
         animation.addUpdateListener(new XAnimation());
+    }
+
+    public void startYAnimation(float yFrom, float yTo, int duration) {
+        prepYAnimation(yFrom, yTo);
+        animation.setDuration(duration);
+        animation.start();
+    }
+
+    public void startYAnimation(float yFrom, float yTo) {
+        prepYAnimation(yFrom, yTo);
         animation.setDuration(400);
         animation.start();
     }
-    
-    public void startYAnimation(float yFrom, float yTo) {
+
+    private void prepYAnimation(float yFrom, float yTo) {
         if (animation != null) {
             animation.cancel();
         }
         animation = ValueAnimator.ofFloat(yFrom, yTo);
         animation.setInterpolator(new DecelerateInterpolator());
         animation.addUpdateListener(new YAnimation());
-        animation.setDuration(400);
-        animation.start();
     }
 
     public void startZoomAnimation(float zoomFrom, float zoomTo) {
@@ -77,7 +97,7 @@ class AnimationManager {
         ZoomAnimation zoomAnim = new ZoomAnimation();
         animation.addUpdateListener(zoomAnim);
         animation.addListener(zoomAnim);
-        animation.setDuration(400);
+        animation.setDuration(0);
         animation.start();
     }
 
